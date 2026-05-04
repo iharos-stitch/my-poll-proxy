@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   // ── only allow these three catalogs ──
-  const ALLOWED_CATALOGS = ['polls', 'poll_responses', 'poll_results'];
+  const ALLOWED_CATALOGS = ['thisorthatpolls', 'poll_responses', 'poll_results'];
 
   const { catalog, itemId } = req.query;
 
