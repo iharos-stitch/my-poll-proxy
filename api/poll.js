@@ -1,6 +1,5 @@
 export default async function handler(req, res) {
 
-  // CORS first — before anything else so headers are always sent
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -21,10 +20,14 @@ export default async function handler(req, res) {
   try {
     const brazeUrl = `${process.env.BRAZE_REST_ENDPOINT}/catalogs/${catalog}/items/${encodeURIComponent(itemId)}`;
 
-    // read body for PUT requests
     let body = undefined;
     if (req.method === 'PUT') {
-      body = JSON.stringify(req.body);
+      // strip id from every item in the body — Braze rejects it when id is in the URL
+      const parsed = req.body;
+      if (parsed?.items) {
+        parsed.items = parsed.items.map(({ id, ...rest }) => rest);
+      }
+      body = JSON.stringify(parsed);
     }
 
     const brazeRes = await fetch(brazeUrl, {
@@ -37,18 +40,13 @@ export default async function handler(req, res) {
     });
 
     const text = await brazeRes.text();
-
     let data;
-    try {
-      data = JSON.parse(text);
-    } catch(e) {
-      // Braze returned non-JSON — surface the raw text
-      return res.status(brazeRes.status).json({ error: 'Non-JSON response from Braze', raw: text });
-    }
+    try { data = JSON.parse(text); }
+    catch(e) { return res.status(brazeRes.status).json({ error: 'Non-JSON from Braze', raw: text }); }
 
     return res.status(brazeRes.status).json(data);
 
   } catch(err) {
-    return res.status(500).json({ error: err.message, stack: err.stack });
+    return res.status(500).json({ error: err.message });
   }
 }
