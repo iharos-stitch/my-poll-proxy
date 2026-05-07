@@ -13,11 +13,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const brazeRes = await fetch(`${process.env.BRAZE_REST_ENDPOINT}/subscription/status/set`, {
+    const brazeRes = await fetch(`${process.env.BRAZE_REST_ENDPOINT_2}/subscription/status/set`, {
       method: 'POST',
       headers: {
         'Content-Type':  'application/json',
-        'Authorization': `Bearer ${process.env.BRAZE_API_KEY}`
+        'Authorization': `Bearer ${process.env.BRAZE_API_KEY_2}`
       },
       body: JSON.stringify({
         subscription_group_id,
