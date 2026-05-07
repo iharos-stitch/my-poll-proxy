@@ -13,13 +13,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const brazeUrl = `${process.env.BRAZE_REST_ENDPOINT}/subscription/user/status?external_id=${encodeURIComponent(external_id)}`;
+    const brazeUrl = `${process.env.BRAZE_REST_ENDPOINT_2}/subscription/user/status?external_id=${encodeURIComponent(external_id)}`;
 
     const brazeRes = await fetch(brazeUrl, {
       method: 'GET',
       headers: {
         'Content-Type':  'application/json',
-        'Authorization': `Bearer ${process.env.BRAZE_API_KEY}`
+        'Authorization': `Bearer ${process.env.BRAZE_API_KEY_2}`
       }
     });
 
